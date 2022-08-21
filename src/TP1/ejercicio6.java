@@ -26,6 +26,7 @@ public class ejercicio6 {
         public static void main(String [] args){
             double [] v = new double [15];
             
+            //agrego try para que siga la ejecucion a pesar del error
             try {
                 acceso_por_indice_2 (v, 16);
             } catch (Exception e) {
