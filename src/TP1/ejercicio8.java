@@ -9,7 +9,7 @@ public class ejercicio8 {
 
     public static void edadPersona(int edad) throws RuntimeException{
         if (edad < 18){
-            throw new menor_de_edad();
+            throw new menor_de_edad("es menor de edad");
         } else {
             System.out.println("es mayor");
         }
@@ -17,6 +17,7 @@ public class ejercicio8 {
         
 
     }
+
 }
 class menor_de_edad extends RuntimeException{
     public menor_de_edad(){
