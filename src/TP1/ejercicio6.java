@@ -21,6 +21,7 @@ public class ejercicio6 {
                 throw new RuntimeException ("El indice " + j + " no existe en el vector");
                 //TODO: handle exception
             }
+        
         }
         // Desde el siguiente cliente “main”:
         public static void main(String [] args){
