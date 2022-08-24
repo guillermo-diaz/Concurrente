@@ -18,14 +18,14 @@ class TesteoHilos{
         Thread miHilo= new MiEjecucion();
         miHilo.start();
 
-        /*solucion para que imprima primero
-        try {
+     //solucion para que imprima primero
+        /*try {
             Thread.currentThread().sleep(1000); //duermo el main
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-         */
+        }*/
+         
         
         System.out.println("En el main");
     }
