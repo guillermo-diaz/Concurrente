@@ -1,32 +1,18 @@
 package TP2;
-
-//ejercicio 1
-public class Cliente extends Thread {
-    public void run(){
-        System.out.println("soy "+Thread.currentThread().getName());
-        Recurso.uso();
-        try {
-            Thread.sleep(2000);
-
-        }catch (InterruptedException e) {
-        }
+//ejercicio 6
+public class Cliente {
+    private String nombre;
+    private int[] carroCompra;
+    // Constructor y métodos de acceso
+    public Cliente(String nombre, int[] arr){
+        this.nombre = nombre;
+        carroCompra = arr;
     }
-}
-class Recurso {
-    static void uso(){
-        Thread t=Thread.currentThread();
-        System.out.println("en Recurso: Soy " + t.getName());
+    public String getNombre(){
+        return nombre;
     }
-}
-class testeoRecurso {
-    public static void main (String[] args){
-        Cliente juan=new Cliente();
-        juan.setName("Juan Lopez");
-        Cliente ines=new Cliente ();
-        ines.setName ("Ines Garcia");
-        ines.start();
-        juan.start();
+    public int[] getCarroCompra(){
+        return carroCompra;
     }
-}
-
     
+}
