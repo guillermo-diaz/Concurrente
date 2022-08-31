@@ -15,8 +15,7 @@ public class Cajero {
 
     public void esperarXsegundos(int seg){
         try {
-        
-            Thread.sleep((long) seg);
+            Thread.sleep(seg*1000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
