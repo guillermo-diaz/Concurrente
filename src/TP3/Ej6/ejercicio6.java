@@ -1,4 +1,4 @@
-package TP3;
+package TP3.Ej6;
 
 import java.util.Random;
 /* TRABAJO PRACTICO OBLIGATORIO 1
