@@ -1,79 +1,38 @@
 package TP3.Ej6;
 
 import java.util.Random;
-/* TRABAJO PRACTICO OBLIGATORIO 1
-
-- Cristopher Ovaillos
-- Guillermo Diaz
- * 
- */
 
 public class ejercicio6 {
-    public static void main(String[] arg) {
+    public static void main(String[] args) {
+        Random r = new Random();
+        SumaTotal suma = new SumaTotal();
         int[] arreglo = new int[50000];
+        int k = r.nextInt(arreglo.length);
+        System.out.println(k+" hilos:");
+        Sumar[] hilos = new Sumar[k];
         llenarArreglo(arreglo);
-        //mostrarArr(arreglo);
+        llenarHilo(hilos, arreglo, suma);
+        activarHilos(hilos);
+        int sumaVerif = calcularSuma(arreglo);
         
-        HiloSumar[] arrHilos = new HiloSumar[10000];
 
-        llenarHilo(arrHilos, arreglo);
+        for (int j = 0; j < hilos.length; j++){
+            try {
+                hilos[j].join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         
-        
-        try {
-            activarHilos(arrHilos);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        int sumas = 0;
-        for (int j = 0; j<arrHilos.length; j++){
-            sumas = sumas + arrHilos[j].getAcum();
-        }
-       
-        mostrarSuma(arreglo);
-        System.out.println("Acum: "+sumas);
-    }
-    
-
-    public static void activarHilos(HiloSumar[] arr) throws InterruptedException{
-        int lg = arr.length-1;
-        for (int i = 0; i <= lg; i++){
-            arr[i].start();
-            
-        }
-        for (int j = 0; j <= lg; j++){
-            arr[j].join();
-        }
-       
-    }
-    
-    public static void llenarHilo(HiloSumar[] arr, int[] arrNum) {
-        // precondicion: arrNum.length | arr.length
-        int longitud = arr.length;
-        int min = 0;
-        int max=  (arrNum.length / (longitud));
-        int salto = max;
+        System.out.println("SUMA TOTAL VERIFCADA: "+sumaVerif);
+        System.out.println("SUMA POR HILOS: "+suma.getSuma());
 
         
-        for (int i = 0; i < longitud; i++) {
-            
-            arr[i] = new HiloSumar(arrNum, min, max);
-            
-            min = max;
-            max = max + salto;
-        }
+
 
     }
 
-    public static void mostrarSuma(int[] arr){
-        //verificador  
-        int acum = 0;
-        for (int i = 0; i< arr.length; i++){
-            acum = acum + arr[i];
-        }
-        System.out.println("SUMA TOTAL: "+acum);
-    }
     public static void llenarArreglo(int[] arr) {
         int longitud = arr.length;
         for (int i = 0; i < longitud; i++) {
@@ -82,45 +41,50 @@ public class ejercicio6 {
 
         }
     }
-    public static void mostrarArr(int[] arr) {
+
+    public static void llenarHilo(Sumar[] arr, int[] arrNum, SumaTotal suma) {
         int longitud = arr.length;
-        for (int i = 0; i < longitud; i++) {
-            System.out.println("- "+arr[i]);
+        int min = 0;
+        int max=  (arrNum.length / longitud);
+        int resto = arrNum.length % (longitud);
+        int salto = max;
 
+        if (resto != 0){ //va a ir hasta el anteultimo pos del arreglo
+            longitud--;
         }
-    }
-
-
-}
-class HiloSumar extends Thread {
-
-    /**
-     * @param args the command line arguments
-     */
-    private int min;
-    private int acumActual =0;
-    public static int acum = 0;
-    private int max;
-    private int[] arr;
-
-    public HiloSumar(int[] arr, int min, int max) {
-        this.arr = arr;
-        this.min = min;
-        this.max = max;
-
-    }
-
-    public void run() {
-        for (int i = min; i < max; i++) {
-            acumActual = acumActual + arr[i];
+        
+        for (int i = 0; i < longitud; i++) { 
+            
+            arr[i] = new Sumar(arrNum, min, max, suma);
+            
+            min = max;
+            max = max + salto;
         }
-    
-    }
-    
-    public int getAcum(){
-        return acumActual;
-    }
 
+        if (resto != 0){ //si quedó algunas particiones del arreglo de num se los doy al ultimo arreglo para que las sume
+            arr[longitud] = new Sumar(arrNum, min, arrNum.length, suma);
+        } 
+
+    }
+    public static void activarHilos(Sumar[] arr){
+        int lg = arr.length;
+        for (int i = 0; i < lg; i++){
+            arr[i].start();
+            
+        }
+        
+       
+    }
+    public static int calcularSuma(int[] arr){
+        //verificador  
+        int acum = 0;
+        int lg = arr.length;
+        for (int i = 0; i< lg; i++){
+            acum = acum + arr[i];
+        }
+        return acum;
+    }
 }
+
 
 
