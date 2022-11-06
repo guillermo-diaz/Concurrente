@@ -1,4 +1,5 @@
-package TP6.Ej1;
+package TP6.Ej1.Monitores;
+
 
 import java.util.LinkedList;
 import java.util.Queue;
