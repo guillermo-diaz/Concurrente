@@ -2,7 +2,7 @@ package TP6.Ej6;
 
 public class Main {
     public static void main(String[] args) {
-        Sala s = new Sala(2, 5);
+        Sala s = new Sala(4, 9);
         Thread[] donantes = new Thread[14];
         crear_donantes(donantes, s);
         activarHilos(donantes);

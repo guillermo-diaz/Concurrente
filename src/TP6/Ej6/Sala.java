@@ -31,14 +31,14 @@ public class Sala {
         String name = name();
         fila.add(name);
         try {
-            while ( camillas_ocupadas >= cant_camillas && fila.peek() != name) {
-                System.out.println("while");
+            
+            while ( camillas_ocupadas >= cant_camillas || fila.peek() != name) {
                 revista = true; //si se queda en la sala de espera si o si va a leer una revista cuando este disponible
                 this.esperar_turno();
                 camilla_vacia.await(); //ya tiene una revista, espera leyendo a que lo llamen
             }
-            camillas_ocupadas++;
             fila.poll();
+            camillas_ocupadas++;
             System.out.println(VERDE+name+" subio a la camilla"+RESET);
         } catch (Exception e) {
                 // TODO: handle exception
@@ -64,7 +64,7 @@ public class Sala {
         return Thread.currentThread().getName();
     }
 
-    private void esperar_turno(){
+    public void esperar_turno(){
         try {
             String name = name();
             while (revistas_ocupadas >= cant_revistas){

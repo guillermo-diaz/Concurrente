@@ -24,6 +24,7 @@ public class Donante extends Thread{
         try {
             System.out.println(ROJO+getName()+" donando sangre . . ."+RESET);
             sleep(r.nextInt(2000));
+            System.out.println(ROJO+getName()+" termino de donar sangre"+RESET);
         } catch (Exception e) {
             // TODO: handle exception
         }
