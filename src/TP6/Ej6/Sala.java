@@ -7,6 +7,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Sala {
+    /*NOTA: Arreglar caso de que haya 0 revistas y las camillas estén ocupadas, hay deadlock 
+     * borrar la condicion de revista y moverla al while de entrar_sala
+     */
     public static final String VERDE = "\u001B[32m";
     public static final String PURPLE = "\u001B[35m";
     public static final String RESET = "\u001B[0m";
