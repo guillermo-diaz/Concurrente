@@ -7,16 +7,14 @@ public class Babuino extends Thread{
     public Babuino(String n, Cuerda c, String d){
         super(n);
         direccion = d;
-        
         cuerda = c;
 
     }
     @Override
     public void run() {
-        cuerda.subir(direccion);
         cuerda.cruzar(direccion);
         try {
-            sleep(1000);
+            sleep(500);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

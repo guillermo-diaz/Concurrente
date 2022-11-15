@@ -7,34 +7,54 @@ import Color.C;
 
 public class Cuerda {
     public Semaphore mutex;
-    public Semaphore agarrar_cuerda;
-    private String direccion_actual;
+    public int cruzando;
     private int limite_cuerda = 5;
-    private HashMap<String, Contador> map = new HashMap<>();
+    private Semaphore cuerda_izq;
+    private Semaphore cuerda_der;
 
     public Cuerda(){
-        direccion_actual ="";
-        map.put("izq", new Contador(limite_cuerda));
-        map.put("der", new Contador(limite_cuerda));
-        agarrar_cuerda = new Semaphore(limite_cuerda);
+        cruzando = 0;
+        cuerda_der = new Semaphore(limite_cuerda);
+        cuerda_izq = new Semaphore(limite_cuerda);
+
+        mutex = new Semaphore(1);
     }
 
-    public void subir(String dir){
+    public void cruzar(String dir){
         try {
-            mutex.acquire();
-            map.get(dir).increase_esperando(); //espera a subir
-            if (direccion_actual.isEmpty()){
-                set_direccion(); //setea direccion
+            if (dir.equals("izq")){
+                cuerda_izq.acquire();
+                mutex.acquire();
+                if (cruzando == 0){
+                    System.out.println(C.PURPLE+"TURNO "+dir);
+                    cuerda_der.acquire(limite_cuerda);
+                }
+                cruzando++;
+                System.out.println(C.VERDE+name()+" cruzando. ("+cruzando+"/"+limite_cuerda+C.RESET);
                 mutex.release();
             } else {
+                cuerda_der.acquire();
+                mutex.acquire();
+                if (cruzando == 0){
+                    System.out.println(C.PURPLE+"TURNO "+dir);
+                    cuerda_izq.acquire(limite_cuerda);
+                }
+                cruzando++;
+                System.out.println(C.VERDE+name()+" cruzando. ("+cruzando+"/"+limite_cuerda+C.RESET);
                 mutex.release();
-                if (!direccion_actual.equals(dir) || map.get(dir).getCruzando() >= limite_cuerda){
-                    map.get(dir).esperar();
-                    System.out.println(C.PURPLE+name()+" espera"+C.RESET);
-                } 
             }
+            /*
+            map.get(dir).acquire(1);
             mutex.acquire();
-            map.get(dir).decrease_esperando();
+            if (cruzando == 0){
+                System.out.println(C.PURPLE+"TURNO "+dir);
+                map.get(opuesto(dir)).acquire(limite_cuerda);
+                
+            }
+            cruzando++;
+            System.out.println(C.VERDE+name()+" cruzando. ("+cruzando+"/"+limite_cuerda+C.RESET);
+            mutex.release();
+            */
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -45,31 +65,39 @@ public class Cuerda {
         return Thread.currentThread().getName();
     }
 
-    public void cruzar(String dir){
-        try {
-            mutex.acquire();
-            map.get(dir).increase_cruzando();
-            mutex.release();
-            System.out.println(C.ROJO+name()+" cruzando. ("+map.get(dir).getCruzando()+"/"+limite_cuerda+C.RESET);
-            agarrar_cuerda.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public void terminar_cruzar(String dir){
         try {
-            mutex.acquire();
-            map.get(dir).decrease_cruzando();
-            System.out.println(C.ROJO+name()+" termino de cruzar ("+map.get(dir).getCruzando()+"/"+limite_cuerda+C.RESET);
-            agarrar_cuerda.release();
 
-            if (map.get(dir).getCruzando() == 0){ //es el ultimo
-                set_direccion();
+            if (dir.equals("izq")){
+                mutex.acquire();
+                cruzando--;
+                if (cruzando == 0){
+                    cuerda_der.release(limite_cuerda);
+                } 
+                System.out.println(C.ROJO+name()+" termino de cruzar ("+cruzando+"/"+limite_cuerda+C.RESET);
+                cuerda_izq.release();
+                mutex.release();
+            } else {
+                mutex.acquire();
+                cruzando--;
+                if (cruzando == 0){
+                    cuerda_izq.release(limite_cuerda);
+                } 
+                System.out.println(C.ROJO+name()+" termino de cruzar ("+cruzando+"/"+limite_cuerda+C.RESET);
+                cuerda_der.release();
+                mutex.release();
             }
-
+           /* 
+            mutex.acquire();
+            cruzando--;
+            if (cruzando == 0){
+                map.get(opuesto(dir)).liberar(limite_cuerda);
+            }
+            
+            System.out.println(C.ROJO+name()+" termino de cruzar ("+cruzando+"/"+limite_cuerda+C.RESET);
+            map.get(dir).liberar(1);
             mutex.release();
+            */
 
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
@@ -77,21 +105,10 @@ public class Cuerda {
         }
     }
 
-    public void set_direccion(){
-        String opuesto = (direccion_actual.equals("izq")) ? "der" : "izq";
-
-        if (map.get(opuesto).getEsperando() != 0) { // si la especie opuesta esta esperando, cambio prioridad
-            direccion_actual = opuesto;
-            System.out.println("TURNO DE LA ESPECIE " + direccion_actual);
-            map.get(direccion_actual).liberar();
-        } else if (map.get(direccion_actual).getEsperando() != 0) { //si no hay de la esp opuesta pero si de la mia,los dejo pasar
-            System.out.println("TURNO DE LA ESPECIE "+direccion_actual);
-            map.get(direccion_actual).liberar();                     
-        } else {
-            direccion_actual = "";
-            System.out.println("COMEDOR VACIO");
-        }
+    private String opuesto(String dir){
+        return dir.equals("izq") ? "der" : "izq";
     }
+
 
 
 
