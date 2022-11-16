@@ -14,6 +14,7 @@ public class Main {
             } else{
                 babuinos[i] = new Babuino("D#"+i, c, "der");
             }
+            System.out.println(babuinos[i]);
         }
 
         for (Thread b : babuinos) {

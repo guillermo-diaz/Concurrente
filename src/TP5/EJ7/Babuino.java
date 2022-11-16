@@ -21,4 +21,8 @@ public class Babuino extends Thread{
         }
         cuerda.terminar_cruzar(direccion);
     }
+
+    public String toString(){
+        return getName()+direccion;
+    }
 }

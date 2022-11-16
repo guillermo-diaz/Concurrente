@@ -14,8 +14,8 @@ public class Cuerda {
 
     public Cuerda(){
         cruzando = 0;
-        cuerda_der = new Semaphore(limite_cuerda);
-        cuerda_izq = new Semaphore(limite_cuerda);
+        cuerda_der = new Semaphore(5);
+        cuerda_izq = new Semaphore(5);
 
         mutex = new Semaphore(1);
     }
@@ -26,7 +26,7 @@ public class Cuerda {
                 cuerda_izq.acquire();
                 mutex.acquire();
                 if (cruzando == 0){
-                    System.out.println(C.PURPLE+"TURNO "+dir);
+                    System.out.println(C.PURPLE+"TURNO "+dir+C.RESET);
                     cuerda_der.acquire(limite_cuerda);
                 }
                 cruzando++;
