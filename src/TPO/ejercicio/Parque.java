@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 
 public class Parque {
     public Semaphore mutex, esperarVecino, esperarRandom;
-    public int cant_actual, tam, vecinos_esperando;
+    public int cant_actual, tam, vecinos_esperando, random_esperando;
 
     public Parque(){
         mutex = new Semaphore(1);
@@ -13,11 +13,13 @@ public class Parque {
         tam = 30;
         cant_actual = 0;
         vecinos_esperando = 0;
+        random_esperando = 0;
     }
 
     public void entrarRandom() throws InterruptedException{
         mutex.acquire();
         if(cant_actual >= tam || vecinos_esperando> 0 ){ //si esta lleno  o hay vecinos esperando me bloqueo
+            random_esperando++;
             mutex.release(); //libero el mutex antes de bloquearme
             esperarRandom.acquire();
 
@@ -47,7 +49,7 @@ public class Parque {
         cant_actual--;
         if (vecinos_esperando > 0){ //si hay vecinos esperando solo les aviso a ellos que ya hay lugar
             esperarVecino.release();
-        } else {
+        } else if(random_esperando > 0){
             esperarRandom.release(); //si no hay vecinos, les aviso a la gente normal
         }
         mutex.release();
