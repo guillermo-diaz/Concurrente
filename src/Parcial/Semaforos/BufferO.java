@@ -2,9 +2,6 @@ package Parcial.Semaforos;
 
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import Color.C;
 
@@ -28,8 +25,10 @@ public class BufferO {
     public void insertar(Object elem) throws InterruptedException{
         mutexIns.acquire();
         ins.add(elem);
+
         System.out.println(C.VERDE+name()+" inserto elem "+elem+C.RESET);
         status(C.AMARILLO);
+
         mutexIns.release();
         hayElem.release();
     }
@@ -38,6 +37,7 @@ public class BufferO {
         hayElem.acquire();
         mutexExt.acquire();
 
+        System.out.println(C.ROJO+name()+" llegó "+C.RESET);
         mutexIns.acquire();
         if (ext.isEmpty() && !ins.isEmpty()){
             swap();
@@ -57,7 +57,7 @@ public class BufferO {
         //lockIns.lock(); //para que no inserten mientras oscilo
         LinkedList<Object> aux = ins;
         ins = ext;
-        ext = aux;
+        ext = aux; //ext = ins
         System.out.println(C.CYAN+"-----------------------------OSCILACION by "+name()+"-----------------------------"+C.RESET);
         status(C.CYAN);
         //lockIns.unlock();
