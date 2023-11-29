@@ -11,6 +11,8 @@ public class Parque {
         esperarRandom = new Semaphore(0);
         esperarVecino = new Semaphore(0);
         tam = 30;
+        cant_actual = 0;
+        vecinos_esperando = 0;
     }
 
     public void entrarRandom() throws InterruptedException{
