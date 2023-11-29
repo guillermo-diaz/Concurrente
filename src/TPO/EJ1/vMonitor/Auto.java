@@ -1,4 +1,4 @@
-package TPO.EJ1;
+package TPO.EJ1.vMonitor;
 
 public class Auto extends Thread {
     Lugar lugares;

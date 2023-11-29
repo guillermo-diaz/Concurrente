@@ -1,4 +1,4 @@
-package TPO.EJ1;
+package TPO.EJ1.vMonitor;
 
 public class Main {
     public static void main(String[] args) {
